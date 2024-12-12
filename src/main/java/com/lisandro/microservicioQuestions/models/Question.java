@@ -16,13 +16,15 @@ public class Question {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long idLong;
+	private Long id;
 	@Column
 	private String customerName;
 	@Column
 	private String questionDescription;
 	@Column
 	private Date creationDate;
+	@Column
+	private Long articleId;
 	
 	public String getCustomerName() {
 		return customerName;
@@ -36,13 +38,25 @@ public class Question {
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public Long getArticleId() {
+		return articleId;
+	}
+	public void setArticleId(Long articleId) {
+		this.articleId = articleId;
+	}
+	public String getQuestionDescription() {
+		return questionDescription;
+	}
+	public void setQuestionDescription(String questionDescription) {
+		this.questionDescription = questionDescription;
+	}	
 	
-//	public Question(String customerName, String questionDescription, Date creationDate) {
-//		super();
-//		this.customerName = customerName;
-//		this.questionDescription = questionDescription;
-//		this.creationDate = creationDate;
-//	}
 	
 	
 }
