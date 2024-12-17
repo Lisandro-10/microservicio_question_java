@@ -17,6 +17,8 @@ public class QuestionService {
 	
 	
 	public Question createQuestion(QuestionDto questionData, Long articleId) throws Exception{
+		//TODO el customerName habria que obtenerlo del usuario logueado
+		
 		  Question newQuestion = new Question();
 		  newQuestion.setCreationDate(new Date());
 		  newQuestion.setCustomerName(questionData.getCustomerName());
@@ -30,4 +32,10 @@ public class QuestionService {
 		}
 	}
 	
+	public Question getQuestionByArticleId(Long articleId, String userType) {
+		//TODO get the question by userType
+		
+		
+		return null;
+	}
 }

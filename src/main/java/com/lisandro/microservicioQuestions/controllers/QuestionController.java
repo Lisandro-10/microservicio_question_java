@@ -32,11 +32,10 @@ public class QuestionController {
 	}
 	
 	//Get question
-	@GetMapping("/{articleId}/questions/questionId")
-	public ResponseEntity<List<Question>> getQuestion(){
-		//dependiendo el user (client or owner) sera la data que traiga de question
-		//traer las respuestas asociadas
-		
+	@GetMapping("/{articleId}/questions/{questionId}")
+	public ResponseEntity<List<Question>> getQuestion(@PathVariable Long articleId, @PathVariable Long questionId){
+		//TODO usar spring security para obtener sesion y data del usuario
+		// de momento lo paso en la ruta
 		return ResponseEntity.ok(null);
 	}
 	
