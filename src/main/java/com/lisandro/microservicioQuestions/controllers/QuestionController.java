@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lisandro.microservicioQuestions.Dtos.QuestionDto;
+import com.lisandro.microservicioQuestions.dtos.QuestionDto;
 import com.lisandro.microservicioQuestions.models.Question;
 import com.lisandro.microservicioQuestions.services.QuestionService;
 
