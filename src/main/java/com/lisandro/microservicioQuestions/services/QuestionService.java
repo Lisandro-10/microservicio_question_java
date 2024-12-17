@@ -5,7 +5,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.lisandro.microservicioQuestions.Dtos.QuestionDto;
+import com.lisandro.microservicioQuestions.dtos.QuestionDto;
 import com.lisandro.microservicioQuestions.models.Question;
 import com.lisandro.microservicioQuestions.repositories.QuestionRepository;
 

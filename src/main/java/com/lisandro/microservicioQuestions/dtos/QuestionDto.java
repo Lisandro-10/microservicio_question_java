@@ -1,4 +1,4 @@
-package com.lisandro.microservicioQuestions.Dtos;
+package com.lisandro.microservicioQuestions.dtos;
 
 public class QuestionDto {
 
