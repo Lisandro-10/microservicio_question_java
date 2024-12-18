@@ -1,39 +1,34 @@
 package com.lisandro.microservicioQuestions.security;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.HttpClient;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
+import com.lisandro.microservicioQuestions.exceptions.UserUnauthorizedException;
+import com.lisandro.microservicioQuestions.utils.expiringMap.ExpiringMap;
+
+import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-
-import com.lisandro.microservicioQuestions.utils.ExpiringMap;
-
 
 @Service
 public class TokenService {
-	final ExpiringMap<String, User> map = new ExpiringMap<>(60 * 60, 60 * 5);
-	
-	@Autowired
-	Environment env;
+
+    @Autowired
+    TokenDao tokenDao;
+
+    static final ExpiringMap<String, User> map = new ExpiringMap<>(60 * 60, 60 * 5);
 
     public void validateAdmin(String token) {
-        validate(token);
+        validateLoggedIn(token);
         User cachedUser = map.get(token);
         if (cachedUser == null) {
-//            throw new SimpleError(401, "Unauthorized");
+            throw new UserUnauthorizedException("Usuario no autorizado");
         }
-//        if (!contains(cachedUser.permissions, "admin")) {
-//            throw new SimpleError(401, "Unauthorized");
-//        }
+        if (!contains(cachedUser.permissions, "admin")) {
+            throw new UserUnauthorizedException("Usuario sin permisos de admin");
+        }
     }
-    
-    public void validate(String token) {
-        if (token.isEmpty()) {
-//            throw new SimpleError(401, "Unauthorized");
+
+    public void validateLoggedIn(String token) {
+        if (StringUtils.isBlank(token)) {
+            throw new UserUnauthorizedException("Usuario no autorizado");
         }
 
         User cachedUser = map.get(token);
@@ -41,40 +36,16 @@ public class TokenService {
             return;
         }
 
-        User user = retrieveUser(token);
+        User user = tokenDao.retrieveUser(token);
         if (user == null) {
-//            throw new SimpleError(401, "Unauthorized");
+            throw new UserUnauthorizedException("Usuario no autorizado");
         }
         map.put(token, user);
     }
-    
-    private User retrieveUser(String token) {
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpGet request = new HttpGet(env.getProperty("security.securityServerUrl") + "/v1/users/current");
-        request.addHeader("Authorization", token);
-        HttpResponse response;
-        try {
-            response = client.execute(request);
 
-            if (response.getStatusLine().getStatusCode() != 200) {
-                return null;
-            }
-
-            HttpEntity responseEntity = response.getEntity();
-            if (responseEntity == null) {
-                return null;
-            }
-            String body = EntityUtils.toString(responseEntity);
-            return User.fromJson(body);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    
-    // Devuelve un usuario logueado
-    public User getUser(String token){
+    public User getUser(String token) {
         if (token.isEmpty()) {
-//            throw new SimpleError(401, "Unauthorized");
+            throw new UserUnauthorizedException("Usuario no autorizado");
         }
 
         User cachedUser = map.get(token);
@@ -82,11 +53,24 @@ public class TokenService {
             return cachedUser;
         }
 
-        User user = retrieveUser(token);
+        User user = tokenDao.retrieveUser(token);
         if (user == null) {
-//            throw new SimpleError(401, "Unauthorized");
+            throw new UserUnauthorizedException("Usuario no autorizado");
         }
         map.put(token, user);
         return user;
+    }
+
+    public void invalidate(String token) {
+        map.remove(token);
+    }
+
+    private boolean contains(String[] permissions, String permission) {
+        for (String s : permissions) {
+            if (s.equals(permission)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
