@@ -37,4 +37,35 @@ public class QuestionAdminDto {
 	public void setQuestionDescription(String questionDescription) {
 		this.questionDescription = questionDescription;
 	}
+	public Long getQuestionId() {
+		return questionId;
+	}
+	public void setQuestionId(Long questionId) {
+		this.questionId = questionId;
+	}
+	public Long getArticleId() {
+		return articleId;
+	}
+	public void setArticleId(Long articleId) {
+		this.articleId = articleId;
+	}
+	public Date getCreationDate() {
+		return creationDate;
+	}
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+	public String getResponse() {
+		return response;
+	}
+	public void setResponse(String response) {
+		this.response = response;
+	}
+	public Date getResponseDate() {
+		return responseDate;
+	}
+	public void setResponseDate(Date responseDate) {
+		this.responseDate = responseDate;
+	}
+	
 }

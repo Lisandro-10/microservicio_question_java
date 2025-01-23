@@ -1,7 +1,5 @@
 package com.lisandro.microservicioQuestions.controllers;
 
-import java.util.List;
-
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lisandro.microservicioQuestions.dtos.QuestionDto;
 import com.lisandro.microservicioQuestions.models.Question;
+import com.lisandro.microservicioQuestions.security.TokenService;
+import com.lisandro.microservicioQuestions.security.User;
 import com.lisandro.microservicioQuestions.security.ValidateAdminUser;
+import com.lisandro.microservicioQuestions.security.ValidateLoggedIn;
 import com.lisandro.microservicioQuestions.services.QuestionService;
 
 
@@ -27,20 +28,36 @@ public class QuestionController {
 	
 	@Autowired
 	private QuestionService questionService;
+//	@Autowired
+//	private TokenService tokenService;
 
 	// Post question
 	@PostMapping(value = "/{articleId}/questions")
-	public ResponseEntity<Question> createQuestion(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable Long articleId, @RequestBody QuestionDto questionDto) throws Exception{
+	public ResponseEntity<Question> createQuestion(@ValidateLoggedIn @ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable Long articleId, @RequestBody QuestionDto questionDto) throws Exception{
 		return ResponseEntity.status(HttpStatus.CREATED).body(questionService.createQuestion(questionDto, articleId));
 	}
 	
 	
-	//Get question
-	@GetMapping("/{articleId}/questions/{questionId}")
-	public ResponseEntity<?> getQuestion(@ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth ,@PathVariable Long articleId, @PathVariable Long questionId){
-		//TODO usar spring security para obtener sesion y data del usuario
-		// de momento lo paso en la ruta
-		return ResponseEntity.ok("Success");
+//	@GetMapping("/{articleId}/questions")
+//	public ResponseEntity<?> getQuestion(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth ,@PathVariable Long articleId){
+//		String[] userPermissions = tokenService.getUser(auth.substring(7)).getPermissions();
+//		for (String role : userPermissions) {
+//			if(role.equals("admin")) return ResponseEntity.ok(questionService.getQuestionsByIdAdmin(articleId));
+//		}
+//		return ResponseEntity.ok(questionService.getQuestionsByIdClient(articleId));
+//		
+//	}
+	
+	//Get question for admin
+	@GetMapping("/{articleId}/admin/questions")
+	public ResponseEntity<?> getQuestions(@ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth ,@PathVariable Long articleId){
+		return ResponseEntity.ok(questionService.getQuestionsByIdAdmin(articleId));
+	}
+	
+	//Get question for client
+	@GetMapping("/{articleId}/questions")
+	public ResponseEntity<?> getQuestions(@PathVariable Long articleId){
+		return ResponseEntity.ok(questionService.getQuestionsByIdClient(articleId));
 	}
 	
 	
