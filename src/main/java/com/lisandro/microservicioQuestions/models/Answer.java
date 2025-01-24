@@ -22,7 +22,7 @@ public class Answer {
 	private String ownerName;
 	@Column
 	private String answerDescription;
-	@Column
+	@Column(updatable = false, nullable = false)
 	private Date creationDate;
 	@ManyToOne
 	@JoinColumn(name = "id_question")
@@ -39,6 +39,25 @@ public class Answer {
 	}
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
+	}
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getOwnerName() {
+		return ownerName;
+	}
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+	public Question getQuestion() {
+		return question;
+	}
+	public void setQuestion(Question question) {
+		this.question = question;
 	}
 	public Answer(String ownerName, String answerDescription, Date creationDate) {
 		super();

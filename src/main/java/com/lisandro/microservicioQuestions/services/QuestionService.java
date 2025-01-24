@@ -37,6 +37,12 @@ public class QuestionService {
 		}
 	}
 	
+	public Question getQuestionById(int questionId) {
+		Optional <Question> questionDb = questionRepository.findById((long) questionId);
+		if(questionDb != null) return questionDb.get();
+		throw new RecordNotFoundExcepcion("Quesion not found.");
+	}
+	
 	public List<Question> getQuestionsByIdAdmin(Long articleId) {
 		return getQuestions(articleId);
 	}
