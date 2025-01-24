@@ -23,10 +23,8 @@ public class AnswerController {
 	private AnswerService answerService;
 	
 	@PostMapping("/{questionId}")
-	public ResponseEntity<Answer> createAnswer(@ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable int questionId, @RequestBody Answer answer) {
+	public ResponseEntity<?> createAnswer(@ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable Long questionId, @RequestBody Answer answer) throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED).body(answerService.createAnswer(answer, questionId));
-	}
-	
-	
+	}	
 
 }

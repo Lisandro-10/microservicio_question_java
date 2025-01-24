@@ -2,26 +2,27 @@ package com.lisandro.microservicioQuestions.services;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lisandro.microservicioQuestions.dtos.AnswerDto;
 import com.lisandro.microservicioQuestions.dtos.QuestionAdminDto;
 import com.lisandro.microservicioQuestions.dtos.QuestionDto;
 import com.lisandro.microservicioQuestions.exceptions.RecordNotFoundExcepcion;
 import com.lisandro.microservicioQuestions.models.Answer;
 import com.lisandro.microservicioQuestions.models.Question;
 import com.lisandro.microservicioQuestions.repositories.QuestionRepository;
-import com.lisandro.microservicioQuestions.security.TokenService;
 
 @Service
 public class QuestionService {
 
 	@Autowired
 	private QuestionRepository questionRepository;
+	@Autowired
+	private AnswerService answerService;
 	
 	public Question createQuestion(QuestionDto questionData, Long articleId) throws Exception{
 		  Question newQuestion = new Question();
@@ -33,18 +34,18 @@ public class QuestionService {
 		  try {
 			return questionRepository.save(newQuestion);
 		} catch (Exception e) {
-			throw new Exception("Error");
+			throw new Exception("Error: " + e.getMessage());
 		}
 	}
 	
-	public Question getQuestionById(int questionId) {
+	public Question getQuestionById(Long questionId) {
 		Optional <Question> questionDb = questionRepository.findById((long) questionId);
 		if(questionDb != null) return questionDb.get();
 		throw new RecordNotFoundExcepcion("Quesion not found.");
 	}
 	
-	public List<Question> getQuestionsByIdAdmin(Long articleId) {
-		return getQuestions(articleId);
+	public List<QuestionAdminDto> getQuestionsByIdAdmin(Long articleId) {
+		return adaptQuestionAdminData(getQuestions(articleId));
 	}
 	
 	public List<QuestionDto> getQuestionsByIdClient(Long questionId) {
@@ -68,6 +69,23 @@ public class QuestionService {
 			questionsDto.add(questionDto);
 		}
 		return questionsDto;
+	}
+	
+	public List<QuestionAdminDto> adaptQuestionAdminData(List<Question> questions){
+		List<QuestionAdminDto> questionsAdminDto = new ArrayList<>();
+		for (Question question : questions) {
+			List<Answer> answerList = question.getAnswers();
+			if(answerList.isEmpty()) {
+				questionsAdminDto.add(new QuestionAdminDto(question, new ArrayList<>())); 
+			}else {
+				List<AnswerDto> answersDto = new ArrayList<>();
+				for (Answer answer : answerList) {
+					 answersDto.add(answerService.convertAnswerData(answer, question.getId()));
+				}
+				questionsAdminDto.add(new QuestionAdminDto(question, answersDto));
+			}
+		}
+		return questionsAdminDto;
 	}
 	
 	public List<Question> getQuestions(Long articleId) {

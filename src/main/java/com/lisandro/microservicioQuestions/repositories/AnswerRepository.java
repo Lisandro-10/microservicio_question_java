@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.lisandro.microservicioQuestions.models.Answer;
 
 @Repository
-public interface AnswerRepository extends JpaRepository<Answer, Integer> {
+public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
 	
 }

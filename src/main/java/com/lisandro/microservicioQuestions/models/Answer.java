@@ -22,8 +22,9 @@ public class Answer {
 	private String ownerName;
 	@Column
 	private String answerDescription;
-	@Column(updatable = false, nullable = false)
+	@Column
 	private Date creationDate;
+	
 	@ManyToOne
 	@JoinColumn(name = "id_question")
 	private Question question;
@@ -59,13 +60,15 @@ public class Answer {
 	public void setQuestion(Question question) {
 		this.question = question;
 	}
-	public Answer(String ownerName, String answerDescription, Date creationDate) {
+		
+	public Answer(Long id, String ownerName, String answerDescription, Date creationDate, Question question) {
 		super();
+		this.id = id;
 		this.ownerName = ownerName;
 		this.answerDescription = answerDescription;
 		this.creationDate = creationDate;
+		this.question = question;
 	}
-	
 	public Answer() {
 		 
 	}

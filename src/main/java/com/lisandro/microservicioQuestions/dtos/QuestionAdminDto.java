@@ -1,71 +1,30 @@
 package com.lisandro.microservicioQuestions.dtos;
 
-import java.util.Date;
+import java.util.List;
 
-/* Response
- * {
- *  "id": {"id"},
-            "articleId": {"articleId"},
-            "questionId": {"questionId"},
-            "customerName": {"customerName"},
-            "description": {"pregunta"},
-            "creationDate": {"creationDate"},
-            "response": {"responseInfo"},
-            "responseDate":{"responseDate"}
-     }
- * */
+import com.lisandro.microservicioQuestions.models.Question;
+
 public class QuestionAdminDto {
 
-	private Long questionId;
-	private String customerName;
-	private String questionDescription;
-	private Long articleId;
-	private Date creationDate;
-	private String response;
-	private Date responseDate;
+	private Question question;
+	private List<AnswerDto> answersDto;
+	public Question getQuestion() {
+		return question;
+	}
+	public void setQuestion(Question question) {
+		this.question = question;
+	}
+	public List<AnswerDto> getAnswersDto() {
+		return answersDto;
+	}
+	public void setAnswersDto(List<AnswerDto> answersDto) {
+		this.answersDto = answersDto;
+	}
+	public QuestionAdminDto(Question question, List<AnswerDto> answersDto) {
+		super();
+		this.question = question;
+		this.answersDto = answersDto;
+	}
 	
-	
-	public String getCustomerName() {
-		return customerName;
-	}
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
-	}
-	public String getQuestionDescription() {
-		return questionDescription;
-	}
-	public void setQuestionDescription(String questionDescription) {
-		this.questionDescription = questionDescription;
-	}
-	public Long getQuestionId() {
-		return questionId;
-	}
-	public void setQuestionId(Long questionId) {
-		this.questionId = questionId;
-	}
-	public Long getArticleId() {
-		return articleId;
-	}
-	public void setArticleId(Long articleId) {
-		this.articleId = articleId;
-	}
-	public Date getCreationDate() {
-		return creationDate;
-	}
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
-	public String getResponse() {
-		return response;
-	}
-	public void setResponse(String response) {
-		this.response = response;
-	}
-	public Date getResponseDate() {
-		return responseDate;
-	}
-	public void setResponseDate(Date responseDate) {
-		this.responseDate = responseDate;
-	}
 	
 }
