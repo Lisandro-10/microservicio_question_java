@@ -2,6 +2,8 @@ package com.lisandro.microservicioQuestions.models;
 
 import java.util.Date;
 
+import com.google.gson.annotations.Expose;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +29,7 @@ public class Answer {
 	
 	@ManyToOne
 	@JoinColumn(name = "id_question")
+	@Expose(serialize = false)
 	private Question question;
 	
 	public String getAnswerDescription() {
