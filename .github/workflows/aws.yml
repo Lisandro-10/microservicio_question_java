@@ -32,8 +32,8 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t your-dockerhub-username/your-app-name:latest .
-          docker push your-dockerhub-username/your-app-name:latest
+          docker build -t lisandro14/microservice-questions:latest .
+          docker push lisandro14/microservice-questions:latest
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
@@ -42,7 +42,12 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull your-dockerhub-username/your-app-name:latest
-            docker stop your-app-name || true
-            docker rm your-app-name || true
-            docker run -d --name your-app-name -p 8080:8080 your-dockerhub-username/your-app-name:latest
+            docker pull lisandro14/microservice-questions:latest
+            docker stop microservice-questions || true
+            docker rm microservice-questions || true
+            docker run -d --name microservice-questions -p 8080:8080 \
+              -e DB_ENDPOINT=${{ secrets.DB_ENDPOINT }} \
+              -e DB_DATABASE=${{ secrets.DB_DATABASE }} \
+              -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+              lisandro14/microservice-questions:latest
