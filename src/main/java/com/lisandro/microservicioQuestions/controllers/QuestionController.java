@@ -1,7 +1,5 @@
 package com.lisandro.microservicioQuestions.controllers;
 
-import java.util.List;
-
 import org.apache.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +18,6 @@ import com.lisandro.microservicioQuestions.security.ValidateAdminUser;
 import com.lisandro.microservicioQuestions.services.QuestionService;
 
 
-//Chequear bien tema rutas
 @RestController
 @RequestMapping(path = "/v1")
 public class QuestionController {
@@ -30,17 +27,16 @@ public class QuestionController {
 
 	// Post question
 	@PostMapping(value = "/{articleId}/questions")
-	public ResponseEntity<Question> createQuestion(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable Long articleId, @RequestBody QuestionDto questionDto) throws Exception{
-		return ResponseEntity.status(HttpStatus.CREATED).body(questionService.createQuestion(questionDto, articleId));
+	public ResponseEntity<Question> createQuestion(@ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable Long articleId, @RequestBody QuestionDto questionDto) throws Exception{
+		Question newQuestion = questionService.createQuestion(questionDto, articleId);
+		System.out.println(newQuestion.getCreationDate());
+		return ResponseEntity.status(HttpStatus.CREATED).body(newQuestion);
 	}
 	
-	
-	//Get question
-	@GetMapping("/{articleId}/questions/{questionId}")
-	public ResponseEntity<?> getQuestion(@ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth ,@PathVariable Long articleId, @PathVariable Long questionId){
-		//TODO usar spring security para obtener sesion y data del usuario
-		// de momento lo paso en la ruta
-		return ResponseEntity.ok("Success");
+	//Get questions
+	@GetMapping("/{articleId}/questions")
+	public ResponseEntity<?> getQuestions(@PathVariable Long articleId){
+		return ResponseEntity.ok(questionService.getQuestionsByIdClient(articleId));
 	}
 	
 	

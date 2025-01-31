@@ -1,5 +1,7 @@
 package com.lisandro.microservicioQuestions.models;
 
+import com.lisandro.microservicioQuestions.dtos.QuestionDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,20 +11,30 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "Notifications")
 public class Notification {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column
 	private String description;
-	@ManyToOne
-	@JoinColumn(name = "id_question")
-	private Question question;
-	@ManyToOne
-	@JoinColumn(name = "id_answer")
-	private Answer answer;
+	private QuestionDto question;
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public QuestionDto getQuestion() {
+		return question;
+	}
+	public void setQuestion(QuestionDto question) {
+		this.question = question;
+	}
+
+	
 	
 }
