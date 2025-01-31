@@ -17,6 +17,11 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Maven
+        env:
+          DB_URL: ${{ secrets.DB_ENDPOINT }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: mvn clean package -DSkipTests
 
       - name: Login to Docker Hub
