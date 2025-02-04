@@ -13,8 +13,22 @@ public class User {
     public String login;
     @SerializedName("permissions")
     public String[] permissions;
+    
+    
 
-    public static User fromJson(String json) {
+    public String[] getPermissions() {
+		return permissions;
+	}
+
+
+
+	public void setPermissions(String[] permissions) {
+		this.permissions = permissions;
+	}
+
+
+
+	public static User fromJson(String json) {
         return GsonTools.gson().fromJson(json, User.class);
     }
 }

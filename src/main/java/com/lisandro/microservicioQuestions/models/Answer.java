@@ -2,6 +2,8 @@ package com.lisandro.microservicioQuestions.models;
 
 import java.util.Date;
 
+import com.google.gson.annotations.Expose;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,8 +26,10 @@ public class Answer {
 	private String answerDescription;
 	@Column
 	private Date creationDate;
+	
 	@ManyToOne
 	@JoinColumn(name = "id_question")
+	@Expose(serialize = false)
 	private Question question;
 	
 	public String getAnswerDescription() {
@@ -40,13 +44,34 @@ public class Answer {
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
-	public Answer(String ownerName, String answerDescription, Date creationDate) {
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getOwnerName() {
+		return ownerName;
+	}
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+	public Question getQuestion() {
+		return question;
+	}
+	public void setQuestion(Question question) {
+		this.question = question;
+	}
+		
+	public Answer(Long id, String ownerName, String answerDescription, Date creationDate, Question question) {
 		super();
+		this.id = id;
 		this.ownerName = ownerName;
 		this.answerDescription = answerDescription;
 		this.creationDate = creationDate;
+		this.question = question;
 	}
-	
 	public Answer() {
 		 
 	}
