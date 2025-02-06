@@ -27,7 +27,7 @@ public class QuestionController {
 
 	// Post question
 	@PostMapping(value = "/{articleId}/questions")
-	public ResponseEntity<Question> createQuestion(@ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable Long articleId, @RequestBody QuestionDto questionDto) throws Exception{
+	public ResponseEntity<Question> createQuestion(@ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable String articleId, @RequestBody QuestionDto questionDto) throws Exception{
 		Question newQuestion = questionService.createQuestion(questionDto, articleId);
 		System.out.println(newQuestion.getCreationDate());
 		return ResponseEntity.status(HttpStatus.CREATED).body(newQuestion);
@@ -35,7 +35,7 @@ public class QuestionController {
 	
 	//Get questions
 	@GetMapping("/{articleId}/questions")
-	public ResponseEntity<?> getQuestions(@PathVariable Long articleId){
+	public ResponseEntity<?> getQuestions(@PathVariable String articleId){
 		return ResponseEntity.ok(questionService.getQuestionsByIdClient(articleId));
 	}
 	

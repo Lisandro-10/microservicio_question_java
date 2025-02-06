@@ -4,6 +4,7 @@ import java.util.List;
 
 public class QuestionDto {
 
+	private Long id;
 	private String customerName;
 	private String questionDescription;
 	public List<String> answers;
@@ -13,6 +14,13 @@ public class QuestionDto {
 	}
 	public void setAnswers(List<String> answers) {
 		this.answers = answers;
+	}
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
 	}
 	public String getCustomerName() {
 		return customerName;

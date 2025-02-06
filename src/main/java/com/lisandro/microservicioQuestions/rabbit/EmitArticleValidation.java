@@ -9,26 +9,30 @@ import com.google.gson.annotations.SerializedName;
 public class EmitArticleValidation {
 	
 	@Autowired
-	private RabbitService rabbitService;
+	private DirectPublisher rabbitService;
 
-    public void sendArticleValidation(String articleId) {
-        ArticleValidationData data = new ArticleValidationData(articleId);
+    public void sendArticleValidation(String articleId, Long questionId) {
+        ArticleValidationData data = new ArticleValidationData(articleId, questionId);
 
         RabbitEvent eventToSend = new RabbitEvent();
         eventToSend.type = "article-data";
         eventToSend.exchange = "question";
-        eventToSend.queue = "question";
+        eventToSend.queue = "question_article_exist";
         eventToSend.message = data;
+        
 
-        rabbitService.publish("catalog", "catalog", eventToSend);
+        rabbitService.publish("article_exist", "catalog_article_exist", eventToSend);
     }
 
     private static class ArticleValidationData {
-        ArticleValidationData(String articleId) {
+        ArticleValidationData(String articleId, Long questionId) {
             this.articleId = articleId;
+            this.questionId = questionId;
         }
 
         @SerializedName("articleId")
         public final String articleId;
+        @SerializedName("questionId")
+        public final Long questionId;
     }
 }

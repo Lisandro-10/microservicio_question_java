@@ -28,7 +28,9 @@ public class Question {
 	@Column
 	private Date creationDate;
 	@Column
-	private Long articleId;
+	private String articleId;
+	@Column
+	private boolean active;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
 	private List<Answer> answers = new ArrayList<Answer>();
@@ -37,6 +39,15 @@ public class Question {
 	public List<Answer> getAnswers() {
 		return answers;
 	}
+	
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
 	public void setAnswers(List<Answer> answers) {
 		this.answers = answers;
 	}
@@ -58,10 +69,10 @@ public class Question {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Long getArticleId() {
+	public String getArticleId() {
 		return articleId;
 	}
-	public void setArticleId(Long articleId) {
+	public void setArticleId(String articleId) {
 		this.articleId = articleId;
 	}
 	public String getQuestionDescription() {

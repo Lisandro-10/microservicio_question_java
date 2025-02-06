@@ -11,6 +11,6 @@ import com.lisandro.microservicioQuestions.models.Question;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long>{
 
-	List<Optional<Question>> findByArticleId(Long articleId);
+	List<Optional<Question>> findByArticleId(String articleId);
 
 }

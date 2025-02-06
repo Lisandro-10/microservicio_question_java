@@ -10,7 +10,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 @Service
-public class RabbitService {
+public class DirectPublisher {
 
     @Autowired
     EnvironmentVars environmentVars;

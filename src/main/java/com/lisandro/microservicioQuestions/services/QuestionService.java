@@ -12,6 +12,7 @@ import com.lisandro.microservicioQuestions.dtos.QuestionDto;
 import com.lisandro.microservicioQuestions.exceptions.RecordNotFoundExcepcion;
 import com.lisandro.microservicioQuestions.models.Answer;
 import com.lisandro.microservicioQuestions.models.Question;
+import com.lisandro.microservicioQuestions.rabbit.EmitArticleValidation;
 import com.lisandro.microservicioQuestions.repositories.QuestionRepository;
 
 @Service
@@ -19,16 +20,18 @@ public class QuestionService {
 
 	@Autowired
 	private QuestionRepository questionRepository;
+	@Autowired
+	private EmitArticleValidation rabbitController;
 	
-	public Question createQuestion(QuestionDto questionData, Long articleId) throws Exception{
-		//TODO el customerName habria que obtenerlo del usuario logueado
-		
+	public Question createQuestion(QuestionDto questionData, String articleId) throws Exception{
+		  rabbitController.sendArticleValidation(articleId, questionData.getId());
 		  Question newQuestion = new Question();
 		  newQuestion.setCreationDate(new Date());
 		  newQuestion.setCustomerName(questionData.getCustomerName());
-		  //TODO revisar que articleId existe
-		  newQuestion.setArticleId(articleId);
+		  newQuestion.setArticleId(null);
+		  newQuestion.setActive(false);
 		  newQuestion.setQuestionDescription(questionData.getQuestionDescription());
+		  
 		  try {
 			return questionRepository.save(newQuestion);
 		} catch (Exception e) {
@@ -36,7 +39,7 @@ public class QuestionService {
 		}
 	}
 
-	public List<QuestionDto> getQuestionsByIdClient(Long articleId) {
+	public List<QuestionDto> getQuestionsByIdClient(String articleId) {
 		List<Optional<Question>> optionalQuestion = questionRepository.findByArticleId(articleId);
 		if(optionalQuestion != null) {
 			List<Question> questions = new ArrayList<>();
@@ -67,7 +70,7 @@ public class QuestionService {
 		return questionsDto;
 	}
 	
-	public Question getQuestionByArticleId(Long articleId, String userType) {
+	public Question activateQuestion(Long questionId,String articleId) {
 		//TODO get the question by userType
 		
 		
