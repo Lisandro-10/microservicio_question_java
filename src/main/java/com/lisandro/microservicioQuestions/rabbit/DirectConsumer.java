@@ -54,7 +54,7 @@ public class DirectConsumer {
 	            factory.setHost(environmentVars.envData.rabbitServerUrl);
 	            Connection connection = factory.newConnection();
 	            Channel channel = connection.createChannel();
-
+	            
 	            channel.exchangeDeclare(exchange, "direct");
 	            channel.queueDeclare(queue, false, false, false, null);
 
@@ -62,7 +62,6 @@ public class DirectConsumer {
 
 	            new Thread(() -> {
 	                try {
-
 	                    channel.basicConsume(queue, true, new EventConsumer(channel));
 	                } catch (Exception e) {
 	                    startDelayed();

@@ -28,9 +28,12 @@ public class DirectPublisher {
             channel.queueBind(queue, exchange, queue);
 
             channel.basicPublish(exchange, queue, null, GsonTools.toJson(message).getBytes());
+            System.out.println("Enviando al Exchange: " + exchange + " Queue: " + queue);
+
 
         } catch (Exception e) {
-            System.out.println("RabbitMQ no se pudo encolar " + e);
+            System.out.println("RabbitMQ no se pudo encolar ");
+            e.printStackTrace();
         }
     }
 }

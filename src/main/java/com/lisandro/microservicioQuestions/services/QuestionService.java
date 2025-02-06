@@ -12,6 +12,7 @@ import com.lisandro.microservicioQuestions.dtos.QuestionDto;
 import com.lisandro.microservicioQuestions.exceptions.RecordNotFoundExcepcion;
 import com.lisandro.microservicioQuestions.models.Answer;
 import com.lisandro.microservicioQuestions.models.Question;
+import com.lisandro.microservicioQuestions.rabbit.ConsumeArticleValidation;
 import com.lisandro.microservicioQuestions.rabbit.EmitArticleValidation;
 import com.lisandro.microservicioQuestions.repositories.QuestionRepository;
 
@@ -24,15 +25,14 @@ public class QuestionService {
 	private EmitArticleValidation rabbitController;
 	
 	public Question createQuestion(QuestionDto questionData, String articleId) throws Exception{
-		  rabbitController.sendArticleValidation(articleId, questionData.getId());
-		  Question newQuestion = new Question();
-		  newQuestion.setCreationDate(new Date());
-		  newQuestion.setCustomerName(questionData.getCustomerName());
-		  newQuestion.setArticleId(null);
-		  newQuestion.setActive(false);
-		  newQuestion.setQuestionDescription(questionData.getQuestionDescription());
-		  
-		  try {
+		rabbitController.sendArticleValidation(articleId, questionData.getId());
+		Question newQuestion = new Question();
+		newQuestion.setCreationDate(new Date());
+		newQuestion.setCustomerName(questionData.getCustomerName());
+		newQuestion.setArticleId(null);
+		newQuestion.setActive(false);
+		newQuestion.setQuestionDescription(questionData.getQuestionDescription());
+		try {
 			return questionRepository.save(newQuestion);
 		} catch (Exception e) {
 			throw new Exception("Error: " + e.getMessage());
@@ -70,10 +70,12 @@ public class QuestionService {
 		return questionsDto;
 	}
 	
-	public Question activateQuestion(Long questionId,String articleId) {
-		//TODO get the question by userType
+	public void activateQuestion(Long questionId,String articleId) {
+		Optional<Question> questionDb= questionRepository.findById(questionId);
+		if(questionDb != null) {
+			questionDb.get().setActive(true);
+			System.out.println("Articulo verificado! La pregunta " + questionDb.get().getQuestionDescription() + " se encuentra activa.");
+		}
 		
-		
-		return null;
 	}
 }

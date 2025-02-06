@@ -15,9 +15,9 @@ public class EmitArticleValidation {
         ArticleValidationData data = new ArticleValidationData(articleId, questionId);
 
         RabbitEvent eventToSend = new RabbitEvent();
-        eventToSend.type = "article-data";
-        eventToSend.exchange = "question";
-        eventToSend.queue = "question_article_exist";
+        eventToSend.type = "question-validation";
+        eventToSend.exchange = "article_exist";
+        eventToSend.queue = "cart_article_exist";
         eventToSend.message = data;
         
 

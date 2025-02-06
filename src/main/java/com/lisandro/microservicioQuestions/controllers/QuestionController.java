@@ -29,7 +29,6 @@ public class QuestionController {
 	@PostMapping(value = "/{articleId}/questions")
 	public ResponseEntity<Question> createQuestion(@ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable String articleId, @RequestBody QuestionDto questionDto) throws Exception{
 		Question newQuestion = questionService.createQuestion(questionDto, articleId);
-		System.out.println(newQuestion.getCreationDate());
 		return ResponseEntity.status(HttpStatus.CREATED).body(newQuestion);
 	}
 	
