@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lisandro.microservicioQuestions.dtos.QuestionDto;
+import com.lisandro.microservicioQuestions.exceptions.QuestionIdNull;
 import com.lisandro.microservicioQuestions.exceptions.RecordNotFoundExcepcion;
 import com.lisandro.microservicioQuestions.models.Answer;
 import com.lisandro.microservicioQuestions.models.Question;
@@ -25,7 +26,6 @@ public class QuestionService {
 	private EmitArticleValidation rabbitController;
 	
 	public Question createQuestion(QuestionDto questionData, String articleId) throws Exception{
-		rabbitController.sendArticleValidation(articleId, questionData.getId());
 		Question newQuestion = new Question();
 		newQuestion.setCreationDate(new Date());
 		newQuestion.setCustomerName(questionData.getCustomerName());
@@ -33,7 +33,10 @@ public class QuestionService {
 		newQuestion.setActive(false);
 		newQuestion.setQuestionDescription(questionData.getQuestionDescription());
 		try {
-			return questionRepository.save(newQuestion);
+			Question questionCreated = questionRepository.save(newQuestion);
+			System.out.println("Question id created: " + questionCreated.getId());
+			rabbitController.sendArticleValidation(articleId, questionCreated.getId());
+			return questionCreated;
 		} catch (Exception e) {
 			throw new Exception("Error: " + e.getMessage());
 		}
@@ -70,10 +73,12 @@ public class QuestionService {
 		return questionsDto;
 	}
 	
-	public void activateQuestion(Long questionId,String articleId) {
+	public void activateQuestion(Long questionId) {
+		System.out.println("MENSAJE RECIBIDO! Se procede a activar pregunta...");
 		Optional<Question> questionDb= questionRepository.findById(questionId);
 		if(questionDb != null) {
 			questionDb.get().setActive(true);
+			questionRepository.save(questionDb.get());
 			System.out.println("Articulo verificado! La pregunta " + questionDb.get().getQuestionDescription() + " se encuentra activa.");
 		}
 		

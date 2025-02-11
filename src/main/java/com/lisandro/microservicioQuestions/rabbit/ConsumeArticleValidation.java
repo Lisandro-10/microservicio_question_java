@@ -3,6 +3,7 @@ package com.lisandro.microservicioQuestions.rabbit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.lisandro.microservicioQuestions.exceptions.QuestionIdNull;
 import com.lisandro.microservicioQuestions.rabbit.dto.NewArticleValidationData;
 import com.lisandro.microservicioQuestions.services.QuestionService;
 
@@ -16,15 +17,22 @@ public class ConsumeArticleValidation {
 
 
 	    public void init() {
-	    	System.out.println("Consumidor de RabbitMQ en Questions iniciando...");
-	        directConsumer.init("article_exist", "cart_article_exist");
-	        directConsumer.addProcessor("article-data", this::articleValidation);
+	        directConsumer.init("question", "question_article_exist");
+	        directConsumer.addProcessor("question_article_exist", this::articleValidation);
 	        directConsumer.start();
 	    }
 
 
 	    public void articleValidation(RabbitEvent event) {
-	    	NewArticleValidationData articleExist = NewArticleValidationData.fromJson(event.message.toString());
-	        questionService.activateQuestion(articleExist.questionId, articleExist.articleId);
+    	    try {
+    	        NewArticleValidationData articleExist = NewArticleValidationData.fromJson(event.message.toString());
+    	        if(articleExist.questionId == 0) {
+    	        	throw new QuestionIdNull("Question id null");
+    	        }
+    	        questionService.activateQuestion(articleExist.questionId);
+    	    } catch (Exception e) {
+    	        System.err.println("Error al procesar el mensaje: " + e.getMessage());
+    	        e.printStackTrace();
+    	    }
 	    }
 }

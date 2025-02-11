@@ -1,5 +1,6 @@
 package com.lisandro.microservicioQuestions.rabbit;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import com.rabbitmq.client.*;
 
 @Service
 public class DirectConsumer {
-	 @Autowired
+	 	@Autowired
 	    EnvironmentVars environmentVars;
 
 	    @Autowired
@@ -49,6 +50,7 @@ public class DirectConsumer {
 	     * Conecta a rabbit para escuchar eventos
 	     */
 	    public void start() {
+	    	System.out.println("Comienza intento de connection...");
 	        try {
 	            ConnectionFactory factory = new ConnectionFactory();
 	            factory.setHost(environmentVars.envData.rabbitServerUrl);
@@ -62,12 +64,15 @@ public class DirectConsumer {
 
 	            new Thread(() -> {
 	                try {
-	                    channel.basicConsume(queue, true, new EventConsumer(channel));
+	                    String consumerTag = channel.basicConsume(queue, true, new EventConsumer(channel));
+	                    System.out.println("Consumer tag: " + consumerTag);
 	                } catch (Exception e) {
+	                	System.out.println(e.getStackTrace());
 	                    startDelayed();
 	                }
 	            }).start();
 	        } catch (Exception e) {
+	        	e.printStackTrace();
 	            startDelayed();
 	        }
 	    }
@@ -83,15 +88,20 @@ public class DirectConsumer {
 	                                   AMQP.BasicProperties properties, //
 	                                   byte[] body) {
 	            try {
+	            	System.out.println("Handle delivery called...");
+	            	String message = new String(body, StandardCharsets.UTF_8);
+	                System.out.println("📩 Mensaje recibido: " + message);
 	                RabbitEvent event = RabbitEvent.fromJson(new String(body));
 	                validator.validate(event);
 
 	                EventProcessor l = listeners.get(event.type);
+	                System.out.println("listener obtenido: " + l);
 	                if (l != null) {
 
 	                    l.process(event);
 	                }
 	            } catch (Exception e) {
+	            	e.printStackTrace();
 	            }
 	        }
 	    }

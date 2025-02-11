@@ -15,12 +15,12 @@ public class EmitArticleValidation {
         ArticleValidationData data = new ArticleValidationData(articleId, questionId);
 
         RabbitEvent eventToSend = new RabbitEvent();
-        eventToSend.type = "question-validation";
-        eventToSend.exchange = "article_exist";
-        eventToSend.queue = "cart_article_exist";
+        eventToSend.type = "question_article_exist";
+        eventToSend.exchange = "question";
+        eventToSend.queue = "question_article_exist";
         eventToSend.message = data;
         
-
+        System.out.println("Message to send: " + data.questionId);
         rabbitService.publish("article_exist", "catalog_article_exist", eventToSend);
     }
 

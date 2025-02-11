@@ -25,7 +25,6 @@ public class RabbitEvent {
 
     // El body del mensaje
     @SerializedName("message")
-    @NotEmpty
     public Object message;
 
     public static RabbitEvent fromJson(String json) {
