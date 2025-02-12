@@ -19,7 +19,7 @@ public class TokenDao {
 
     public User retrieveUser(String token) {
         HttpClient client = HttpClientBuilder.create().build();
-        HttpGet request = new HttpGet(environmentVars.envData.securityServerUrl + "/v1/users/current");
+        HttpGet request = new HttpGet(environmentVars.envData.securityServerUrl + "/users/current");
         request.addHeader("Authorization", token);
         HttpResponse response;
         try {

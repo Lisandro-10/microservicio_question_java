@@ -65,9 +65,8 @@ public class DirectConsumer {
 	            new Thread(() -> {
 	                try {
 	                    String consumerTag = channel.basicConsume(queue, true, new EventConsumer(channel));
-	                    System.out.println("Consumer tag: " + consumerTag);
 	                } catch (Exception e) {
-	                	System.out.println(e.getStackTrace());
+	                	e.printStackTrace();
 	                    startDelayed();
 	                }
 	            }).start();
@@ -95,7 +94,6 @@ public class DirectConsumer {
 	                validator.validate(event);
 
 	                EventProcessor l = listeners.get(event.type);
-	                System.out.println("listener obtenido: " + l);
 	                if (l != null) {
 
 	                    l.process(event);

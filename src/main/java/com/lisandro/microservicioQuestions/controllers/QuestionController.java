@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lisandro.microservicioQuestions.dtos.QuestionDto;
 import com.lisandro.microservicioQuestions.models.Question;
-import com.lisandro.microservicioQuestions.security.ValidateAdminUser;
+import com.lisandro.microservicioQuestions.security.ValidateLoggedIn;
 import com.lisandro.microservicioQuestions.services.QuestionService;
 
 
@@ -27,14 +27,14 @@ public class QuestionController {
 
 	// Post question
 	@PostMapping(value = "/{articleId}/questions")
-	public ResponseEntity<Question> createQuestion(@ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable String articleId, @RequestBody QuestionDto questionDto) throws Exception{
+	public ResponseEntity<Question> createQuestion(@ValidateLoggedIn @RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable String articleId, @RequestBody QuestionDto questionDto) throws Exception{
 		Question newQuestion = questionService.createQuestion(questionDto, articleId);
 		return ResponseEntity.status(HttpStatus.CREATED).body(newQuestion);
 	}
 	
 	//Get questions
 	@GetMapping("/{articleId}/questions")
-	public ResponseEntity<?> getQuestions(@PathVariable String articleId){
+	public ResponseEntity<?> getQuestions(@ValidateLoggedIn @RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable String articleId){
 		return ResponseEntity.ok(questionService.getQuestionsByIdClient(articleId));
 	}
 	

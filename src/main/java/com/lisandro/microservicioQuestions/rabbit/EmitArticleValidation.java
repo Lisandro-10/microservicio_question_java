@@ -18,6 +18,7 @@ public class EmitArticleValidation {
         eventToSend.type = "question_article_exist";
         eventToSend.exchange = "question";
         eventToSend.queue = "question_article_exist";
+        eventToSend.routing_key= "question_article_exist";
         eventToSend.message = data;
         
         System.out.println("Message to send: " + data.questionId);

@@ -9,11 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lisandro.microservicioQuestions.dtos.QuestionDto;
-import com.lisandro.microservicioQuestions.exceptions.QuestionIdNull;
 import com.lisandro.microservicioQuestions.exceptions.RecordNotFoundExcepcion;
 import com.lisandro.microservicioQuestions.models.Answer;
 import com.lisandro.microservicioQuestions.models.Question;
-import com.lisandro.microservicioQuestions.rabbit.ConsumeArticleValidation;
 import com.lisandro.microservicioQuestions.rabbit.EmitArticleValidation;
 import com.lisandro.microservicioQuestions.repositories.QuestionRepository;
 

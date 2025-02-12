@@ -18,6 +18,9 @@ public class RabbitEvent {
     // Por si el destinatario necesita saber de donde viene el mensaje
     @SerializedName("queue")
     public String queue;
+    
+    @SerializedName("routing_key")
+    public String routing_key;
 
     // Por si el destinatario necesita saber de donde viene el mensaje
     @SerializedName("exchange")
