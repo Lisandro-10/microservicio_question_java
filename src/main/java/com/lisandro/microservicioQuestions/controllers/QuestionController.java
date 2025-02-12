@@ -35,7 +35,7 @@ public class QuestionController {
 	//Get questions
 	@GetMapping("/{articleId}/questions")
 	public ResponseEntity<?> getQuestions(@ValidateLoggedIn @RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable String articleId){
-		return ResponseEntity.ok(questionService.getQuestionsByIdClient(articleId));
+		return ResponseEntity.ok(questionService.getQuestionsById(articleId));
 	}
 	
 	

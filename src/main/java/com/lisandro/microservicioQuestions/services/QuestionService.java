@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lisandro.microservicioQuestions.dtos.QuestionDto;
+import com.lisandro.microservicioQuestions.enums.QuestionStatus;
 import com.lisandro.microservicioQuestions.exceptions.RecordNotFoundExcepcion;
 import com.lisandro.microservicioQuestions.models.Answer;
 import com.lisandro.microservicioQuestions.models.Question;
@@ -28,11 +29,10 @@ public class QuestionService {
 		newQuestion.setCreationDate(new Date());
 		newQuestion.setCustomerName(questionData.getCustomerName());
 		newQuestion.setArticleId(null);
-		newQuestion.setActive(false);
+		newQuestion.setStatus(QuestionStatus.PENDING);
 		newQuestion.setQuestionDescription(questionData.getQuestionDescription());
 		try {
 			Question questionCreated = questionRepository.save(newQuestion);
-			System.out.println("Question id created: " + questionCreated.getId());
 			rabbitController.sendArticleValidation(articleId, questionCreated.getId());
 			return questionCreated;
 		} catch (Exception e) {
@@ -40,7 +40,7 @@ public class QuestionService {
 		}
 	}
 
-	public List<QuestionDto> getQuestionsByIdClient(String articleId) {
+	public List<QuestionDto> getQuestionsById(String articleId) {
 		List<Optional<Question>> optionalQuestion = questionRepository.findByArticleId(articleId);
 		if(optionalQuestion != null) {
 			List<Question> questions = new ArrayList<>();
@@ -71,14 +71,23 @@ public class QuestionService {
 		return questionsDto;
 	}
 	
-	public void activateQuestion(Long questionId) {
-		System.out.println("MENSAJE RECIBIDO! Se procede a activar pregunta...");
+	public void activateQuestion(Long questionId, String articleId) {
 		Optional<Question> questionDb= questionRepository.findById(questionId);
 		if(questionDb != null) {
-			questionDb.get().setActive(true);
+			questionDb.get().setStatus(QuestionStatus.VALID);
+			questionDb.get().setArticleId(articleId);
 			questionRepository.save(questionDb.get());
-			System.out.println("Articulo verificado! La pregunta " + questionDb.get().getQuestionDescription() + " se encuentra activa.");
+			System.out.println("Articulo verificado! Se valido la pregunta: " + questionId);
 		}
 		
+	}
+
+	public void disableQuestion(Long questionId) {
+		Optional<Question> questionDb= questionRepository.findById(questionId);
+		if(questionDb != null) {
+			questionDb.get().setStatus(QuestionStatus.INVALID);
+			questionRepository.save(questionDb.get());
+			System.out.println("Pregunta invalidada! No existe el articulo especificado.");
+		}
 	}
 }

@@ -65,6 +65,7 @@ public class DirectConsumer {
 	            new Thread(() -> {
 	                try {
 	                    String consumerTag = channel.basicConsume(queue, true, new EventConsumer(channel));
+	                    System.out.println("Consumer " + consumerTag + " escuchando...");
 	                } catch (Exception e) {
 	                	e.printStackTrace();
 	                    startDelayed();
@@ -87,17 +88,15 @@ public class DirectConsumer {
 	                                   AMQP.BasicProperties properties, //
 	                                   byte[] body) {
 	            try {
-	            	System.out.println("Handle delivery called...");
 	            	String message = new String(body, StandardCharsets.UTF_8);
 	                System.out.println("📩 Mensaje recibido: " + message);
 	                RabbitEvent event = RabbitEvent.fromJson(new String(body));
-	                validator.validate(event);
-
-	                EventProcessor l = listeners.get(event.type);
+	                EventProcessor l = listeners.get("question_article_exist");
 	                if (l != null) {
 
 	                    l.process(event);
 	                }
+	                
 	            } catch (Exception e) {
 	            	e.printStackTrace();
 	            }

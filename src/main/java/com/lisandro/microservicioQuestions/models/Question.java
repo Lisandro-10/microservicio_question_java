@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.lisandro.microservicioQuestions.enums.QuestionStatus;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,8 +33,8 @@ public class Question {
 	private Date creationDate;
 	@Column
 	private String articleId;
-	@Column
-	private boolean active;
+	@Enumerated(EnumType.STRING)
+	private QuestionStatus status;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
 	private List<Answer> answers = new ArrayList<Answer>();
@@ -38,14 +42,6 @@ public class Question {
 	
 	public List<Answer> getAnswers() {
 		return answers;
-	}
-	
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
 	}
 
 	public void setAnswers(List<Answer> answers) {
@@ -80,7 +76,18 @@ public class Question {
 	}
 	public void setQuestionDescription(String questionDescription) {
 		this.questionDescription = questionDescription;
-	}	
+	}
+
+	public QuestionStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(QuestionStatus status) {
+		this.status = status;
+	}
+
+	
+	
 	
 	
 	

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lisandro.microservicioQuestions.dtos.AnswerDto;
+import com.lisandro.microservicioQuestions.enums.QuestionStatus;
 import com.lisandro.microservicioQuestions.models.Answer;
 import com.lisandro.microservicioQuestions.models.Question;
 import com.lisandro.microservicioQuestions.repositories.AnswerRepository;
@@ -23,10 +24,10 @@ public class AnswerService {
 	public AnswerDto createAnswer(Answer answer, Long questionId) throws Exception {
 		try {
 			Optional<Question> questionDb = questionRepository.findById(questionId);
-			if(questionDb != null) {
+			if(questionDb != null && questionDb.get().getStatus() == QuestionStatus.VALID) {
 				answer.setQuestion(questionDb.get());
 			} else {
-				throw new Exception("Error: Question not found.");
+				throw new Exception("Error: La pregunta no existe o no fue validada todavia, intente de nuevo mas tarde.");
 			}
 			answer.setCreationDate(new Date());
 			return  convertAnswerData(answerRepository.save(answer), questionId);

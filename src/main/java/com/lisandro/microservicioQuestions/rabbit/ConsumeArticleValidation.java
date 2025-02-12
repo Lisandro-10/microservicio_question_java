@@ -26,10 +26,16 @@ public class ConsumeArticleValidation {
 	    public void articleValidation(RabbitEvent event) {
     	    try {
     	        NewArticleValidationData articleExist = NewArticleValidationData.fromJson(event.message.toString());
-    	        if(articleExist.questionId == 0) {
+    	        Long questionId = articleExist.questionId;
+    	        String articleId = articleExist.articleId;
+    	        if(questionId == 0) {
     	        	throw new QuestionIdNull("Question id null");
     	        }
-    	        questionService.activateQuestion(articleExist.questionId);
+    	        if(!articleExist.valid) {
+    	        	System.out.println("Articulo con id: " + articleId + " NO existe!");
+    	        	questionService.disableQuestion(questionId);
+    	        }
+    	        questionService.activateQuestion(questionId, articleId);
     	    } catch (Exception e) {
     	        System.err.println("Error al procesar el mensaje: " + e.getMessage());
     	        e.printStackTrace();

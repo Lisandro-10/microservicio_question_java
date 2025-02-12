@@ -11,8 +11,8 @@ public class EmitArticleValidation {
 	@Autowired
 	private DirectPublisher rabbitService;
 
-    public void sendArticleValidation(String articleId, Long questionId) {
-        ArticleValidationData data = new ArticleValidationData(articleId, questionId);
+    public void sendArticleValidation(String articleId, Long referenceId) {
+        ArticleValidationData data = new ArticleValidationData(articleId, referenceId+"");
 
         RabbitEvent eventToSend = new RabbitEvent();
         eventToSend.type = "question_article_exist";
@@ -21,19 +21,18 @@ public class EmitArticleValidation {
         eventToSend.routing_key= "question_article_exist";
         eventToSend.message = data;
         
-        System.out.println("Message to send: " + data.questionId);
         rabbitService.publish("article_exist", "catalog_article_exist", eventToSend);
     }
 
     private static class ArticleValidationData {
-        ArticleValidationData(String articleId, Long questionId) {
+        ArticleValidationData(String articleId, String referenceId) {
             this.articleId = articleId;
-            this.questionId = questionId;
+            this.referenceId = referenceId;
         }
 
         @SerializedName("articleId")
         public final String articleId;
-        @SerializedName("questionId")
-        public final Long questionId;
+        @SerializedName("referenceId")
+        public final String referenceId;
     }
 }
