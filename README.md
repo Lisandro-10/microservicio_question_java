@@ -71,7 +71,7 @@ _Response_
       {
             "customerName": {"customerName"},
             "questionDescription": {"pregunta"},
-            "answers": []: {"lista de respuestas"}
+            "answers": ["lista de respuestas"]
       }
 ]
 ```
