@@ -15,9 +15,6 @@ El microservicio que se plantea busca resolver la funcionalidad de permitir a lo
 
 - solo los usuarios 'admin' pueden responder ya que ellos son los habilitados a subir artículos
 
-## CU: Notificar consulta
-
-- se emite un paquete con información de las preguntas a través de un canal rabbitmq
 
 ## CU: Consultar Questions
 
