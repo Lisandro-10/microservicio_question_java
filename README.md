@@ -15,9 +15,6 @@ El microservicio que se plantea busca resolver la funcionalidad de permitir a lo
 
 - solo los usuarios 'admin' pueden responder ya que ellos son los habilitados a subir artículos
 
-## CU: Notificar consulta
-
-- se emite un paquete con información de las preguntas a través de un canal rabbitmq
 
 ## CU: Consultar Questions
 
@@ -27,37 +24,32 @@ El microservicio que se plantea busca resolver la funcionalidad de permitir a lo
 ### Modelo de datos
 
 **Question**
-id: integer
-articleId: integer
+id: Long
 customerName: String
-questionInfo: String
+questionDescription: String
 creationDate: Date
+articleId: String
+status: QuestionStatus
 
-**Response**
-id: integer
-questionId: integer
+**Answer**
+id: Long
+question: Question
 ownerName: String
-responseInfo: String
+answerDescription: String
 creationDate: Date
 
-**Notification**
-id: integer
-articleId: integer
-questionInfo: String
-responseInfo: String
-creationDate: Date
 
 ### Interfaz REST
 
 **Creación de question de un artículo**
-`POST /v1/question/{articleId}`
+`POST /v1/{articleId}/questions`
 
 _Body_
 
 ```json
 {
-	"userName": {"nombre del usuario que genera la pregunta"},
-	"description": {"la pregunta"}
+	"customerName": {"nombre del usuario que genera la pregunta"},
+	"questionDescription": {"la pregunta"}
 }
 ```
 
@@ -66,7 +58,7 @@ _Response_
 
 **Consulta de question de un artículo**
 _Desde usuario cliente_
-`GET /v1/question/{articleId}/userData`
+`GET /v1/{articleId}/questions`
 
 _Response_
 `200 OK` si existe por lo menos una question en ese artículo | `404 N0T FOUND`
@@ -75,44 +67,22 @@ _Response_
 [
       {
             "customerName": {"customerName"},
-            "description": {"pregunta"},
-            "creationDate": {"creationDate"},
-            "response": {"responseInfo"},
-            "responseDate": {"responseDate"}
+            "questionDescription": {"pregunta"},
+            "answers": ["lista de respuestas"]
       }
 ]
 ```
 
-_Desde usuario vendedor_
-`GET /v1/question/{articleId}/ownerData`
-
-_Response_"
-`200 OK` si existe por lo menos una question en ese artículo | `404 NOT FOUND`
-
-```json
-[
-      {
-            "id": {"id"},
-            "articleId": {"articleId"},
-            "questionId": {"questionId"},
-            "customerName": {"customerName"},
-            "description": {"pregunta"},
-            "creationDate": {"creationDate"},
-            "response": {"responseInfo"},
-            "responseDate":{"responseDate"}
-      }
-]
-```
 
 **Creación de response de la question de un artículo**
-`POST /v1/question/{questionId}/response`
+`POST /v1/answer/{questionId}`
 
 _Body_
 
 ```json
 {
 	"ownerName": {"nombre del usuario admin que posteo el articulo"},
-	"description": {"respuesta"}
+	"answerDescription": {"respuesta"}
 }
 ```
 
@@ -128,9 +98,9 @@ Le mandamos articleId y nos devuelve si existe o no el article.
 
 ```json
 {
-      "type": "article-exist",
+      "type": "question_article_exist",
       "message": {
-            "referenceId": "{cartId}",
+            "referenceId": "{questionId}",
             "articleId": "{articleId}",
             "valid": true|false
       }
@@ -142,46 +112,11 @@ Le mandamos articleId y nos devuelve si existe o no el article.
 ```json
 {
   "type": "article-exist",
-  "queue": "questions",
-  "exchange": "questions",
+  "queue": "catalog_article_exist",
+  "exchange": "article_exist",
   "message": {
-    "referenceId": "{cartId}",
+    "referenceId": "{questionId}",
     "articleId": "{articleId}"
-  }
-}
-```
-
-**Notificación de questions**
-
-- POST - Envía notificación de creación de question
-
-```json
-{
-  "type": "notification",
-  "queue": "questions",
-  "exchange": "questions",
-  "message": {
-    "articleId": "{articleId}",
-    "questionId": "{questionId}",
-    "questionInfo": "{questionInfo}",
-    "customerName": "{customerName}",
-    "questionDate": "{questionDate}"
-  }
-}
-```
-
-- POST - Envía notificación de response
-
-```json
-{
-  "type": "notification",
-  "queue": "questions",
-  "exchange": "questions",
-  "message": {
-    "questionId": "{questionId}",
-    "responseInfo": "{responseInfo}",
-    "ownerName": "{ownerName}",
-    "responseDate": "{responseDate}"
   }
 }
 ```
