@@ -34,8 +34,10 @@ public class ConsumeArticleValidation {
     	        if(!articleExist.valid) {
     	        	System.out.println("Articulo con id: " + articleId + " NO existe!");
     	        	questionService.disableQuestion(questionId);
+    	        }else {
+    	        	questionService.activateQuestion(questionId, articleId);
     	        }
-    	        questionService.activateQuestion(questionId, articleId);
+    	        
     	    } catch (Exception e) {
     	        System.err.println("Error al procesar el mensaje: " + e.getMessage());
     	        e.printStackTrace();

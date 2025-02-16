@@ -41,7 +41,7 @@ public class QuestionService {
 	}
 
 	public List<QuestionDto> getQuestionsById(String articleId) {
-		List<Optional<Question>> optionalQuestion = questionRepository.findByArticleId(articleId);
+		List<Optional<Question>> optionalQuestion = questionRepository.findByArticleIdAndStatus(articleId, QuestionStatus.VALID);
 		if(optionalQuestion != null) {
 			List<Question> questions = new ArrayList<>();
 			for (Optional<Question> optional : optionalQuestion) {

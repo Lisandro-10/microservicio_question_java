@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lisandro.microservicioQuestions.models.Answer;
 import com.lisandro.microservicioQuestions.security.ValidateAdminUser;
+import com.lisandro.microservicioQuestions.security.ValidateLoggedIn;
 import com.lisandro.microservicioQuestions.services.AnswerService;
 
 @RestController
@@ -23,7 +24,7 @@ public class AnswerController {
 	private AnswerService answerService;
 	
 	@PostMapping("/{questionId}")
-	public ResponseEntity<?> createAnswer(@ValidateAdminUser @RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable Long questionId, @RequestBody Answer answer) throws Exception {
+	public ResponseEntity<?> createAnswer(@ValidateLoggedIn @RequestHeader(HttpHeaders.AUTHORIZATION) String auth, @PathVariable Long questionId, @RequestBody Answer answer) throws Exception {
 		return ResponseEntity.status(HttpStatus.CREATED).body(answerService.createAnswer(answer, questionId));
 	}	
 
